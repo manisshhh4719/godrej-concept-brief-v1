@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Concept Brief Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1916;--ink2:#4a4843;--ink3:#8a8780;--ink4:#c4c1ba;
+  --paper:#faf9f6;--paper2:#f2f0eb;--paper3:#e8e5de;
+  --accent:#c8501a;--accent-light:#f5ede7;
+  --success:#2d6a4f;--success-bg:#e8f4ee;
+  --warn:#92400e;--warn-bg:#fef3c7;
+  --border:rgba(26,25,22,0.12);--border-strong:rgba(26,25,22,0.22);
+  --radius:10px;--radius-lg:16px;
+}
+body{font-family:'Geist',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+.shell{max-width:960px;margin:0 auto;padding:48px 24px 100px}
+
+/* Header */
+.header{margin-bottom:40px}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.header-title{font-family:'Instrument Serif',serif;font-size:40px;font-weight:400;line-height:1.1;color:var(--ink);margin-bottom:10px}
+.header-title em{font-style:italic;color:var(--accent)}
+.header-sub{font-size:14px;color:var(--ink2);max-width:520px;line-height:1.75}
+
+/* Progress */
+.progress-wrap{margin-bottom:40px}
+.progress-bar-track{height:2px;background:var(--paper3);border-radius:2px;margin-bottom:16px}
+.progress-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s ease}
+.progress-steps{display:flex}
+.prog-step{flex:1;display:flex;flex-direction:column;align-items:center;cursor:default;position:relative}
+.prog-step.clickable{cursor:pointer}
+.prog-step:not(:last-child)::after{content:'';position:absolute;top:11px;left:calc(50% + 12px);right:calc(-50% + 12px);height:1px;background:var(--border)}
+.prog-step.done:not(:last-child)::after{background:var(--accent)}
+.prog-dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border-strong);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--ink3);transition:all 0.2s;z-index:1}
+.prog-step.active .prog-dot{background:var(--ink);border-color:var(--ink);color:white}
+.prog-step.done .prog-dot{background:var(--accent);border-color:var(--accent);color:white;font-size:11px}
+.prog-label{font-size:9px;font-weight:500;letter-spacing:0.04em;color:var(--ink3);margin-top:5px;text-align:center;text-transform:uppercase;line-height:1.3}
+.prog-step.active .prog-label,.prog-step.done .prog-label{color:var(--ink)}
+
+/* Form card */
+.card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:16px}
+.field-eyebrow{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.field-title{font-family:'Instrument Serif',serif;font-size:24px;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.2}
+.field-hint{font-size:13px;color:var(--ink3);margin-bottom:20px;line-height:1.65}
+.optional-tag{display:inline-block;font-size:10px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3);background:var(--paper2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;margin-left:8px;vertical-align:middle}
+.sub-label{font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin:14px 0 6px}
+
+/* Inputs */
+select,textarea{width:100%;padding:11px 14px;border:1px solid var(--border-strong);border-radius:var(--radius);background:var(--paper);font-family:'Geist',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color 0.15s,box-shadow 0.15s;line-height:1.6;appearance:none;-webkit-appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8780' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;cursor:pointer}
+select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,80,26,0.08);background:white}
+textarea{resize:vertical;min-height:88px}
+.err-msg{font-size:12px;color:var(--accent);margin-top:6px;display:none}
+
+/* Slider */
+.slider-wrap{background:var(--paper2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-top:20px}
+.slider-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.slider-label{font-size:12px;font-weight:500;color:var(--ink2)}
+.slider-value{font-size:13px;font-weight:500;color:var(--accent);background:var(--accent-light);padding:2px 10px;border-radius:20px}
+.slider-desc{font-size:11px;color:var(--ink3);margin-top:6px;line-height:1.5}
+input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
+
+/* Buttons */
+.nav-row{display:flex;gap:10px;align-items:center;margin-top:24px;flex-wrap:wrap}
+.btn{padding:11px 24px;border-radius:var(--radius);border:1px solid var(--border-strong);background:white;font-family:'Geist',sans-serif;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;transition:all 0.15s}
+.btn:hover{background:var(--paper2)}
+.btn.primary{background:var(--ink);color:white;border-color:var(--ink)}
+.btn.primary:hover{background:#2d2c28}
+.btn.accent-btn{background:var(--accent);color:white;border-color:var(--accent)}
+.btn.accent-btn:hover{background:#a83f14}
+.btn.success-btn{background:var(--success);color:white;border-color:var(--success)}
+.btn:disabled{opacity:0.45;cursor:not-allowed}
+.skip-link{font-size:12px;color:var(--ink3);cursor:pointer}
+.skip-link u{color:var(--ink2)}
+
+/* Generation progress */
+.gen-progress{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:16px}
+.gen-title{font-family:'Instrument Serif',serif;font-size:22px;color:var(--ink);margin-bottom:4px}
+.gen-subtitle{font-size:13px;color:var(--ink3);margin-bottom:28px}
+.gen-steps{display:flex;flex-direction:column;gap:0}
+.gen-step{display:flex;align-items:flex-start;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)}
+.gen-step:last-child{border-bottom:none}
+.gen-step-icon{width:32px;height:32px;border-radius:50%;border:2px solid var(--border-strong);background:var(--paper2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all 0.3s}
+.gen-step.active .gen-step-icon{border-color:var(--accent);background:var(--accent-light);animation:pulse 1.5s ease infinite}
+.gen-step.done .gen-step-icon{border-color:var(--success);background:var(--success-bg);color:var(--success)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,80,26,0.2)}50%{box-shadow:0 0 0 6px rgba(200,80,26,0)}}
+.gen-step-body{flex:1;padding-top:4px}
+.gen-step-name{font-size:14px;font-weight:500;color:var(--ink3);transition:color 0.3s}
+.gen-step.active .gen-step-name{color:var(--ink)}
+.gen-step.done .gen-step-name{color:var(--success)}
+.gen-step-detail{font-size:12px;color:var(--ink4);margin-top:2px;line-height:1.5}
+.gen-step.active .gen-step-detail{color:var(--ink3)}
+.gen-step.done .gen-step-detail{color:var(--success)}
+
+/* Badges */
+.cache-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.cache-badge.from-cache{background:var(--success-bg);color:var(--success);border:1px solid rgba(45,106,79,0.2)}
+.cache-badge.fresh{background:var(--accent-light);color:var(--accent);border:1px solid rgba(200,80,26,0.2)}
+.score-wrap{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.score-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500}
+.score-badge.high{background:var(--success-bg);color:var(--success);border:1px solid rgba(45,106,79,0.2)}
+.score-badge.mid{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(146,64,14,0.2)}
+.score-badge.low{background:#fee2e2;color:#991b1b;border:1px solid rgba(153,27,27,0.2)}
+.score-dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+/* ═══════════════════════════════════════════
+   CONCEPT CARD — Godrej Reference Style
+   16:9, left lifestyle photo / right content panel
+═══════════════════════════════════════════ */
+.concept-wrap{animation:fadeUp 0.3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.fmcg-card-outer{border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.15);margin-bottom:20px;background:#fff}
+
+#fmcgCard{
+  display:flex;
+  width:100%;
+  aspect-ratio:16/9;
+  position:relative;
+  font-family:'Geist',sans-serif;
+  background:#fff;
+}
+
+/* LEFT — lifestyle image 52% */
+.fcard-left{
+  width:52%;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(160deg,#2c3e50 0%,#4a5568 60%,#2d3748 100%);
+  flex-shrink:0;
+}
+.fcard-left-img{width:100%;height:100%;object-fit:cover;display:block;}
+.fcard-tension-overlay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:8% 9%;
+  background:linear-gradient(to right,rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.04) 100%);
+}
+.fcard-tension-text{
+  font-family:'Instrument Serif',serif;
+  font-style:italic;
+  font-size:clamp(12px,2.2vw,24px);
+  color:#fff;
+  line-height:1.55;
+  text-shadow:0 1px 10px rgba(0,0,0,0.5);
+  max-width:88%;
+}
+.fcard-img-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;padding:24px;
+}
+.fcard-img-placeholder .ph-label{font-size:10px;color:rgba(255,255,255,0.3);text-align:center;line-height:1.5;max-width:160px}
+
+/* RIGHT — white panel 48% */
+.fcard-right{
+  width:48%;
+  background:#ffffff;
+  display:flex;flex-direction:column;
+  padding:3.5% 4.5%;
+  position:relative;overflow:hidden;
+}
+
+/* Small tension line above headline */
+.fcard-top-tension{
+  font-size:clamp(7px,0.9vw,10px);
+  color:#6b7280;
+  line-height:1.45;
+  margin-bottom:1.5%;
+  padding-bottom:1.5%;
+  border-bottom:1px solid #f0ede8;
+  flex-shrink:0;
+}
+.fcard-top-tension-statement{
+  font-weight:500;color:#374151;
+  display:block;margin-bottom:1px;
+  font-style:normal;
+}
+.fcard-top-tension-voice{font-style:italic;}
+
+/* Big bold headline */
+.fcard-headline{
+  font-size:clamp(13px,2.5vw,28px);
+  font-weight:800;
+  color:#111827;
+  line-height:1.05;
+  letter-spacing:-0.025em;
+  margin-bottom:2.5%;
+  flex-shrink:0;
+  text-transform:uppercase;
+}
+
+/* Brand row */
+.fcard-brand-row{
+  display:flex;align-items:center;gap:7px;
+  margin-bottom:2%;padding-bottom:2%;
+  border-bottom:1px solid #f0ede8;flex-shrink:0;
+}
+.fcard-godrej-logo{height:clamp(11px,1.6vw,17px);flex-shrink:0;}
+.fcard-brand-divider{width:1px;height:clamp(10px,1.3vw,15px);background:#d1d5db;flex-shrink:0;}
+.fcard-brand-name{font-size:clamp(7px,0.9vw,10px);color:#374151;line-height:1.3;font-weight:400;}
+.fcard-format-pill{
+  margin-left:auto;
+  font-size:clamp(5px,0.75vw,8px);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;
+  color:#7c3aed;background:#ede9fe;padding:2px 6px;border-radius:3px;white-space:nowrap;border:1px solid #ddd6fe;
+}
+
+/* Proof blocks — horizontal like reference */
+.fcard-proofs{display:flex;flex-direction:row;gap:3%;flex:1;min-height:0;margin-bottom:2.5%;}
+.fcard-proof{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:3px;}
+.fcard-proof-icon-wrap{
+  width:clamp(20px,3vw,34px);height:clamp(20px,3vw,34px);
+  border-radius:50%;border:1.5px solid #e5e7eb;
+  display:flex;align-items:center;justify-content:center;margin-bottom:3px;flex-shrink:0;
+  background:#f9fafb;
+}
+.fcard-proof-icon-wrap svg{width:52%;height:52%;}
+.fcard-proof-claim{font-size:clamp(6px,0.95vw,10px);font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;}
+.fcard-proof-ingredient{font-size:clamp(5px,0.8vw,9px);color:#7c3aed;font-weight:500;line-height:1.3;}
+.fcard-proof-rtb{font-size:clamp(5px,0.75vw,8.5px);color:#6b7280;line-height:1.4;font-weight:400;}
+
+/* Footer */
+.fcard-footer{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding-top:2%;border-top:1px solid #f0ede8;flex-shrink:0;
+}
+.fcard-price{font-size:clamp(12px,1.9vw,21px);font-weight:800;color:#111827;letter-spacing:-0.02em;line-height:1;}
+.fcard-price-sub{font-size:clamp(5px,0.7vw,8px);color:#9ca3af;margin-top:1px;}
+.fcard-bottom-tags{display:flex;gap:10%;align-items:center;}
+.fcard-bottom-tag{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.fcard-bottom-tag svg{width:clamp(9px,1.3vw,14px);height:clamp(9px,1.3vw,14px);color:#9ca3af;}
+.fcard-bottom-tag-label{font-size:clamp(4px,0.6vw,7px);color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;text-align:center;line-height:1.3;white-space:nowrap;}
+
+/* Actions row */
+.concept-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+
+/* Eval card */
+.eval-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px}
+.eval-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:16px}
+.eval-scores{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.eval-score-item{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}
+.eval-score-num{font-size:22px;font-weight:500;color:var(--accent);font-family:'Instrument Serif',serif}
+.eval-score-label{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px}
+.eval-insights{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.eval-insight{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:12px}
+.eval-insight-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.eval-insight-label.strength{color:var(--success)}
+.eval-insight-label.weakness{color:var(--accent)}
+.eval-insight-text{font-size:12px;color:var(--ink2);line-height:1.5}
+
+.brief-pill{display:inline-block;font-size:11px;color:var(--ink3);background:var(--paper2);border:1px solid var(--border);border-radius:4px;padding:3px 10px;margin:2px}
+
+/* Error */
+.error-card{background:white;border:1px solid rgba(220,60,40,0.2);border-radius:var(--radius-lg);padding:28px;text-align:center}
+.error-card h3{font-size:17px;color:var(--accent);margin-bottom:8px}
+.error-card p{font-size:13px;color:var(--ink3);line-height:1.6}
+.step-panel{animation:fadeUp 0.22s ease both}
+
+@media(max-width:640px){
+  .header-title{font-size:28px}
+  .prog-label{display:none}
+  .card{padding:20px}
+  .eval-scores{grid-template-columns:repeat(2,1fr)}
+  .eval-insights{grid-template-columns:1fr}
+  #fmcgCard{flex-direction:column;aspect-ratio:auto}
+  .fcard-left{width:100%;height:200px}
+  .fcard-right{width:100%;padding:16px}
+}
+
+/* Home button */
+.home-btn{position:fixed;top:16px;left:16px;z-index:200;display:flex;align-items:center;gap:6px;padding:7px 14px;background:white;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;color:var(--ink2);cursor:pointer;transition:all 0.15s;box-shadow:0 1px 6px rgba(0,0,0,0.07)}
+.home-btn:hover{background:var(--paper2);color:var(--ink)}
+.home-btn svg{width:14px;height:14px;flex-shrink:0}
+
+/* Recent briefs button */
+.recent-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:white;border:1px solid var(--border-strong);border-radius:var(--radius);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;color:var(--ink2);cursor:pointer;transition:all 0.15s;margin-bottom:16px}
+.recent-btn:hover{background:var(--paper2);color:var(--ink)}
+.recent-btn svg{width:14px;height:14px}
+
+/* Modal overlay */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:white;border-radius:var(--radius-lg);padding:28px;width:90%;max-width:480px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:fadeUp 0.2s ease both}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-family:'Instrument Serif',serif;font-size:20px;color:var(--ink)}
+.modal-close{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--ink3)}
+.modal-close:hover{background:var(--paper2);color:var(--ink)}
+.modal-empty{font-size:13px;color:var(--ink3);text-align:center;padding:24px 0}
+.modal-brief-item{padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;background:var(--paper);transition:all 0.15s;margin-bottom:8px}
+.modal-brief-item:last-child{margin-bottom:0}
+.modal-brief-item:hover{background:var(--paper2)}
+.modal-brief-cat{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.modal-brief-tension{font-size:11px;color:var(--ink3);margin-bottom:3px}
+.modal-brief-date{font-size:10px;color:var(--ink4)}
+
+
+/* Recent/trash modal item layout */
+.modal-brief-item{display:flex;align-items:center;gap:10px}
+.modal-brief-clickable{flex:1;cursor:pointer}
+.brief-trash-btn,.brief-restore-btn{width:30px;height:30px;flex-shrink:0;border-radius:7px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all 0.15s;padding:0}
+.brief-trash-btn svg,.brief-restore-btn svg{width:14px;height:14px}
+.brief-trash-btn:hover{background:#fee2e2;color:#991b1b;border-color:rgba(153,27,27,0.2)}
+.brief-restore-btn:hover{background:var(--success-bg);color:var(--success);border-color:rgba(45,106,79,0.2)}
+.modal-footer-link{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);text-align:center}
+.modal-footer-link span{font-size:12px;color:var(--ink3);cursor:pointer;font-weight:500}
+.modal-footer-link span:hover{color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Home button -->
+  <button class="home-btn" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </button>
+
+  <!-- Recent briefs modal -->
+  <div class="modal-overlay" id="recentModal" onclick="closeRecentModal(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitleText">Recent Briefs</div>
+        <button class="modal-close" onclick="closeRecentModalDirect()">✕</button>
+      </div>
+      <div id="recentModalContent"></div>
+    </div>
+  </div>
+
+
+  <div class="header">
+    <div class="eyebrow">FMCG Innovation Tool</div>
+    <h1 class="header-title">Concept <em>Brief</em> Builder</h1>
+    <p class="header-sub">Fill in the brief. Hit generate. Get a complete concept card — ready to review, refine, or share.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-steps" id="progSteps"></div>
+  </div>
+
+  <div id="formArea"></div>
+
+</div>
+
+<script>
+// ── Category data ─────────────────────────────
+const CATEGORIES = [
+  {g:'Personal Care',items:['Skin Care','Hair Care','Oral Care','Deodorants & Antiperspirants','Sun Care','Men\'s Grooming','Feminine Hygiene','Baby Care']},
+  {g:'Home Care',items:['Fabric Care','Dishwashing','Surface Cleaners','Air Care','Toilet Care','Pest Control']},
+  {g:'Foods',items:['Savoury Spreads & Sauces','Soups & Broths','Seasonings & Spices','Frozen Foods','Snacks & Crackers','Breakfast Cereals','Noodles & Pasta','Cooking Oils']},
+  {g:'Beverages',items:['Hot Beverages','Juices & Nectars','Energy & Sports Drinks','Dairy Beverages','Functional Drinks','RTD Tea & Coffee']},
+  {g:'Health & Wellness',items:['Vitamins & Supplements','Protein & Sports Nutrition','Digestive Health','OTC Remedies','Immunity & Wellness']},
+  {g:'Pet Care',items:['Pet Food','Pet Hygiene','Pet Supplements']},
+  {g:'Adjacent / Emerging',items:['Beauty Devices','Sustainable Living','D2C Subscription','Other / New Space']},
+];
+
+const FIELDS = [
+  {id:'category',eyebrow:'Input 1 of 8',label:'Category',title:'Category',hint:'Select the FMCG category you are exploring, then add context — penetration rates, brand fragmentation, white spaces, or category dynamics.',type:'category',required:true},
+  {id:'market',eyebrow:'Input 2 of 8',label:'Market',title:'Market',hint:'Which country or region is this targeting? Include market maturity, consumer sophistication, or distribution landscape.',type:'textarea',placeholder:'e.g. India — Tier 1 & 2 cities. Growing middle class, price-sensitive but premiumising.',required:true},
+  {id:'tg',eyebrow:'Input 3 of 8',label:'Target Group',title:'Target group',hint:'Describe your ideal target audience — demographics, psychographics, lifestyle, and key behavioural traits.',type:'textarea',placeholder:'e.g. Urban women, 25–40. Household decision-makers. Value-conscious but aspirational.',required:true},
+  {id:'tension',eyebrow:'Input 4 of 8',label:'Tension',title:'Consumer tension',hint:'The biggest pain point consumers face in this category today — emotional or functional.',type:'textarea',placeholder:'e.g. She wants her family\'s clothes to smell fresh but products either cost too much or don\'t deliver reliably.',required:true},
+  {id:'unmet',eyebrow:'Input 5 of 8',label:'Unmet Need',title:'Unmet need',hint:'What pain point is no existing product adequately addressing?',type:'textarea',placeholder:'e.g. No product offers gentle skin-safe care AND powerful stain removal in a single affordable format.',required:true},
+  {id:'jtbd',eyebrow:'Input 6 of 8',label:'JTBD',title:'Job to be done',hint:'When the consumer reaches for this product, what is the core task? Frame as: "Help me ___".',type:'textarea',placeholder:'e.g. Help me feel confident my family\'s clothes are truly clean — without spending more than I have.',required:true},
+  {id:'product',eyebrow:'Input 7 of 8',label:'Product',title:'Product details',hint:'Tentative brand name, pack size, format, and target price point.',type:'textarea',placeholder:'e.g. Working name: "ClearDay" — 500ml liquid pouch at ₹89.',required:false},
+  {id:'alternatives',eyebrow:'Input 8 of 8',label:'Alternatives',title:'Current alternatives',hint:'What are consumers using today? What are the limitations of those alternatives?',type:'textarea',placeholder:'e.g. Surf Excel (trusted but expensive), local brands (cheap but unreliable).',required:false},
+];
+
+const PROG_LABELS = ['Category','Market','Target Group','Tension','Unmet Need','JTBD','Product','Alternatives'];
+const state = {category:'',categorySelect:'',market:'',tg:'',tension:'',unmet:'',jtbd:'',product:'',alternatives:''};
+let current = 0;
+let similarityThreshold = 0.7;
+
+// ── Progress ──────────────────────────────────
+function renderProgress(override) {
+  const total = FIELDS.length;
+  const cur = override !== undefined ? override : current;
+  const pct = Math.min(100, ((cur) / total) * 100 + (100/total*0.4));
+  document.getElementById('progFill').style.width = pct + '%';
+  const el = document.getElementById('progSteps');
+  el.innerHTML = '';
+  FIELDS.forEach((f,i) => {
+    const done = i < cur;
+    const active = i === cur;
+    const d = document.createElement('div');
+    d.className = 'prog-step'+(active?' active':done?' done clickable':'');
+    d.innerHTML = '<div class="prog-dot">'+(done?'✓':i+1)+'</div><div class="prog-label">'+PROG_LABELS[i]+'</div>';
+    if (done) d.onclick = () => goTo(i);
+    el.appendChild(d);
+  });
+}
+
+// ── Field rendering ───────────────────────────
+function renderField() {
+  const f = FIELDS[current];
+  const isLast = current === FIELDS.length - 1;
+  let inner = '';
+
+  if (f.type === 'category') {
+    let opts = '<option value="">— Select a category —</option>';
+    CATEGORIES.forEach(g => {
+      opts += '<optgroup label="'+g.g+'">';
+      g.items.forEach(it => { opts += '<option value="'+it+'"'+(state.categorySelect===it?' selected':'')+'>'+it+'</option>'; });
+      opts += '</optgroup>';
+    });
+    inner = '<select id="sel_category" onchange="state.categorySelect=this.value">'+opts+'</select>'
+      +'<div class="sub-label">Additional context <span class="optional-tag">Optional</span></div>'
+      +'<textarea id="inp_category" placeholder="Penetration rates, brand fragmentation, white spaces..." rows="3">'+(state.category||'')+'</textarea>'
+      +'<div class="err-msg" id="err_category">Please select a category before continuing.</div>';
+  } else {
+    inner = '<textarea id="inp_'+f.id+'" placeholder="'+f.placeholder+'" rows="4">'+(state[f.id]||'')+'</textarea>'
+      +'<div class="err-msg" id="err_'+f.id+'">Please fill this in before continuing.</div>';
+  }
+
+  const optTag = !f.required ? ' <span class="optional-tag">Optional</span>' : '';
+  const skipLink = !f.required ? '<span class="skip-link" onclick="skip()">or <u>skip →</u></span>' : '';
+
+  const sliderHtml = isLast ? '<div class="slider-wrap">'
+    +'<div class="slider-header"><span class="slider-label">Brief match sensitivity</span><span class="slider-value" id="sliderVal">'+Math.round(similarityThreshold*100)+'%</span></div>'
+    +'<input type="range" min="50" max="100" value="'+Math.round(similarityThreshold*100)+'" oninput="updateSlider(this.value)">'
+    +'<div class="slider-desc" id="sliderDesc">'+getSliderDesc(similarityThreshold)+'</div>'
+    +'</div>' : '';
+
+  const recentBtnHtml = (current === 0 && getHistory().length > 0)
+    ? '<button class="recent-btn" onclick="openRecentModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Recent briefs</button><br>'
+    : '';
+
+  document.getElementById('formArea').innerHTML = '<div class="step-panel">'
+    +recentBtnHtml
+    +'<div class="card">'
+    +'<div class="field-eyebrow">'+f.eyebrow+'</div>'
+    +'<div class="field-title">'+f.title+optTag+'</div>'
+    +'<div class="field-hint">'+f.hint+'</div>'
+    +inner
+    +sliderHtml
+    +'</div>'
+    +'<div class="nav-row">'
+    +(current > 0 ? '<button class="btn" onclick="prev()">← Back</button>' : '')
+    +(!isLast
+      ? '<button class="btn primary" onclick="next()">Continue →</button>'
+      : '<button class="btn accent-btn" onclick="generate()">Generate concept →</button>')
+    +skipLink
+    +'</div>'
+    +'</div>';
+
+  // Live autosave — persist the draft as the user types or selects, so an
+  // accidental refresh keeps the current work and position
+  const liveInputs = document.querySelectorAll('#formArea textarea, #formArea select');
+  liveInputs.forEach(el => {
+    el.addEventListener('input', () => { saveInput(true); });
+    el.addEventListener('change', () => { saveInput(true); });
+  });
+}
+
+function getSliderDesc(val) {
+  if (val >= 0.9) return '90%+ match required — only nearly identical briefs reuse a saved card.';
+  if (val >= 0.75) return '75%+ match — similar briefs with same category and tension reuse a saved card.';
+  if (val >= 0.6) return '60%+ match — briefs with broadly similar themes reuse a saved card.';
+  return '50%+ match — loose matching. Many briefs may be treated as similar.';
+}
+
+function updateSlider(val) {
+  similarityThreshold = val / 100;
+  document.getElementById('sliderVal').textContent = val + '%';
+  document.getElementById('sliderDesc').textContent = getSliderDesc(similarityThreshold);
+}
+
+// ── Save / validate ───────────────────────────
+function saveInput(live) {
+  const f = FIELDS[current];
+  if (f.type === 'category') {
+    const s = document.getElementById('sel_category');
+    const t = document.getElementById('inp_category');
+    if (s) state.categorySelect = s.value;
+    if (t) state.category = live ? t.value : t.value.trim();
+  } else {
+    const el = document.getElementById('inp_' + f.id);
+    if (el) state[f.id] = live ? el.value : el.value.trim();
+  }
+  saveStateToStorage();
+}
+
+function validate() {
+  const f = FIELDS[current];
+  if (!f.required) return true;
+  if (f.type === 'category') {
+    if (!state.categorySelect) { document.getElementById('err_category').style.display='block'; return false; }
+  } else {
+    if (!state[f.id]) { document.getElementById('err_'+f.id).style.display='block'; return false; }
+  }
+  return true;
+}
+
+function next()  { saveInput(); if(!validate()) return; current++; saveStateToStorage(); renderProgress(); renderField(); scrollTop(); }
+function prev()  { saveInput(); current--; saveStateToStorage(); renderProgress(); renderField(); scrollTop(); }
+function skip()  { saveInput(); current++; saveStateToStorage(); renderProgress(); renderField(); scrollTop(); }
+function goTo(i) { saveInput(); current=i; saveStateToStorage(); renderProgress(); renderField(); scrollTop(); }
+function scrollTop() { window.scrollTo({top:0,behavior:'smooth'}); }
+
+// ── Prompt builder ────────────────────────────
+function buildPrompt() {
+  const cat = [state.categorySelect, state.category].filter(Boolean).join(' — ');
+  return 'Category: '+(cat||'Not specified')+'\nMarket: '+(state.market||'Not specified')+'\nTarget Group: '+(state.tg||'Not specified')+'\nConsumer Tension: '+(state.tension||'Not specified')+'\nUnmet Need: '+(state.unmet||'Not specified')+'\nJob To Be Done: '+(state.jtbd||'Not specified')+'\nProduct Details: '+(state.product||'TBD')+'\nCurrent Alternatives: '+(state.alternatives||'Not specified');
+}
+
+// ── Generation progress ───────────────────────
+const GEN_STEPS = [
+  {id:'s1',icon:'🔍',name:'Checking saved briefs',detail:'Looking for similar concept cards in gold standard library...'},
+  {id:'s2',icon:'✍️',name:'Generating concept variants',detail:'Creating 3 different concept cards for your brief...'},
+  {id:'s3',icon:'⚖️',name:'Evaluating each concept',detail:'Scoring all variants on tension, headline, RTB quality, and commercial potential...'},
+  {id:'s4',icon:'🏆',name:'Selecting the best concept',detail:'Picking the highest scoring concept card...'},
+  {id:'s5',icon:'💾',name:'Saving as gold standard',detail:'Storing the best concept for future use with similar briefs...'},
+  {id:'s6',icon:'✅',name:'Finalising concept card',detail:'Preparing your concept card for display...'},
+];
+
+function showGenerationProgress() {
+  renderProgress(FIELDS.length);
+  document.getElementById('progFill').style.width = '100%';
+  const stepsHtml = GEN_STEPS.map(s =>
+    '<div class="gen-step" id="'+s.id+'">'
+    +'<div class="gen-step-icon">'+s.icon+'</div>'
+    +'<div class="gen-step-body"><div class="gen-step-name">'+s.name+'</div><div class="gen-step-detail">'+s.detail+'</div></div>'
+    +'</div>'
+  ).join('');
+  document.getElementById('formArea').innerHTML =
+    '<div class="gen-progress">'
+    +'<div class="gen-title">Building your concept card</div>'
+    +'<div class="gen-subtitle">This takes about 30–60 seconds. We generate 3 variants and pick the best one.</div>'
+    +'<div class="gen-steps">'+stepsHtml+'</div>'
+    +'</div>';
+  activateStep('s1');
+}
+
+function activateStep(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function completeStep(id, detail) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('active');
+  el.classList.add('done');
+  el.querySelector('.gen-step-icon').textContent = '✓';
+  if (detail) el.querySelector('.gen-step-detail').textContent = detail;
+}
+
+function updateStepDetail(id, detail) {
+  const el = document.getElementById(id);
+  if (el) el.querySelector('.gen-step-detail').textContent = detail;
+}
+
+// ── Generate ──────────────────────────────────
+async function generate() {
+  saveInput();
+  if (!validate()) return;
+  saveToHistory();
+  clearDraft();
+  showGenerationProgress();
+
+  try {
+    const prompt = buildPrompt();
+    activateStep('s1');
+    await delay(600);
+
+    const response = await fetch('/api/generate-concept', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({prompt, similarityThreshold})
+    });
+
+    if (!response.ok) throw new Error('Server error ' + response.status);
+    const data = await response.json();
+
+    if (data.fromCache) {
+      completeStep('s1', 'Found a similar brief with '+Math.round(data.similarityScore*100)+'% match — using saved gold standard concept.');
+      await delay(400);
+      ['s2','s3','s4','s5'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.classList.add('done'); el.querySelector('.gen-step-icon').textContent='⏭'; el.querySelector('.gen-step-detail').textContent='Skipped — using cached gold standard.'; }
+      });
+      await delay(300);
+      activateStep('s6');
+      await delay(500);
+      completeStep('s6','Concept card ready.');
+      await delay(300);
+      showConceptCard(data.result, data.score, data.evaluation, true, data.similarityScore);
+      fetchImage(data.result.image_prompt);
+    } else {
+      completeStep('s1','No similar brief found — generating fresh concept cards.');
+      await delay(300);
+      activateStep('s2');
+      updateStepDetail('s2','Generating variant 1 of 3...');
+      await delay(3000);
+      updateStepDetail('s2','Generating variants 2–3 of 3...');
+      await delay(3000);
+      completeStep('s2','3 concept card variants generated.');
+      activateStep('s3');
+      updateStepDetail('s3','Scoring tension clarity, headline strength, RTB quality...');
+      await delay(2000);
+      updateStepDetail('s3','Evaluating commercial potential and copy discipline...');
+      await delay(2000);
+      completeStep('s3','All 3 variants scored and ranked.');
+      activateStep('s4');
+      await delay(600);
+      completeStep('s4','Best concept selected — score: '+(data.score||'—')+'/100.');
+      activateStep('s5');
+      await delay(500);
+      completeStep('s5','Gold standard saved for future similar briefs.');
+      activateStep('s6');
+      await delay(400);
+      completeStep('s6','Concept card ready.');
+      await delay(300);
+      showConceptCard(data.result, data.score, data.evaluation, false, null);
+      fetchImage(data.result.image_prompt);
+    }
+  } catch(err) {
+    showError(err.message);
+  }
+}
+
+async function fetchImage(prompt) {
+  try {
+    const fcard = document.getElementById('fmcgCard');
+    if (fcard) {
+      const overlay = document.createElement('div');
+      overlay.innerHTML = '<div id="img-loading-overlay" style="position:absolute; bottom:20px; right:20px; background:rgba(0,0,0,0.8); color:white; padding:8px 16px; border-radius:20px; font-size:14px; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.2);">✨ Painting high-res advertisement...</div>';
+      fcard.style.position = 'relative';
+      fcard.appendChild(overlay.firstChild);
+    }
+
+    const response = await fetch('/api/generate-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Google Image API limit reached');
+    }
+    
+    const data = await response.json();
+    if (data.imageUrl && fcard) {
+      fcard.innerHTML = `<img src="${data.imageUrl}" style="width:100%; height:auto; display:block; border-radius:12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);" />`;
+    }
+  } catch (err) {
+    console.error('Failed to load generated image:', err);
+    const loading = document.getElementById('img-loading-overlay');
+    if (loading) loading.remove();
+    setTimeout(() => {
+      alert("Notice: Google's Image Generator API rejected the request (Quota limit: 0). This means this API key is not authorized for Image Generation. The text-based HTML layout will be displayed instead.");
+    }, 100);
+  }
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── SVG icons for proof blocks ────────────────
+function getProofSVG(iconDesc, idx) {
+  if (!iconDesc) iconDesc = '';
+  const d = iconDesc.toLowerCase();
+  if (d.includes('shield') || d.includes('protect') || d.includes('barrier') || d.includes('defense'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+  if (d.includes('leaf') || d.includes('natural') || d.includes('plant') || d.includes('aloe') || d.includes('herb'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12M12 12C12 7 17 3 22 3c0 5-4 9-10 9zM12 12C12 7 7 3 2 3c0 5 4 9 10 9z"/></svg>';
+  if (d.includes('water') || d.includes('drop') || d.includes('liquid') || d.includes('hydrat') || d.includes('moist'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L6 10a6 6 0 1012 0L12 2z"/></svg>';
+  if (d.includes('star') || d.includes('shine') || d.includes('glow') || d.includes('bright'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  if (d.includes('clock') || d.includes('time') || d.includes('fast') || d.includes('quick'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  if (d.includes('science') || d.includes('lab') || d.includes('tech') || d.includes('formula') || d.includes('acid') || d.includes('complex'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v11l3.5 6H5.5L9 14V3z"/><line x1="9" y1="9" x2="15" y2="9"/></svg>';
+  if (d.includes('heart') || d.includes('skin') || d.includes('gentle') || d.includes('safe') || d.includes('care'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
+  if (d.includes('power') || d.includes('strong') || d.includes('boost') || d.includes('clean') || d.includes('enzyme'))
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+  const icons = [
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v11l3.5 6H5.5L9 14V3z"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+  ];
+  return icons[idx % 3];
+}
+
+function getProofIconColor(idx) {
+  const colors = [
+    {border:'#bfdbfe',bg:'#eff6ff',stroke:'#3b82f6'},
+    {border:'#bbf7d0',bg:'#f0fdf4',stroke:'#22c55e'},
+    {border:'#ddd6fe',bg:'#f5f3ff',stroke:'#8b5cf6'}
+  ];
+  return colors[idx % 3];
+}
+
+function getScoreClass(score) {
+  if (score >= 75) return 'high';
+  if (score >= 55) return 'mid';
+  return 'low';
+}
+
+const GODREJ_LOGO_SVG = '<svg class="fcard-godrej-logo" viewBox="0 0 120 32" xmlns="http://www.w3.org/2000/svg"><text x="2" y="26" font-family="Georgia,serif" font-style="italic" font-size="26" font-weight="700" fill="#1a1916" letter-spacing="-1">Godrej</text></svg>';
+
+// ── CONCEPT CARD ──────────────────────────────
+function showConceptCard(d, score, evaluation, fromCache, similarityScore) {
+  if (!d) { showError('No concept data received'); return; }
+
+  const proof1 = d.proof_block_1 || {};
+  const proof2 = d.proof_block_2 || {};
+  const proof3 = d.proof_block_3 || {};
+  const proofs = [proof1, proof2, proof3].filter(p => p.claim_label);
+
+  const cacheBadge = fromCache
+    ? '<div class="cache-badge from-cache">Loaded from gold standard library - '+Math.round(similarityScore*100)+'% brief match</div>'
+    : '<div class="cache-badge fresh">Fresh generation - Saved as new gold standard</div>';
+
+  const scoreBadge = score
+    ? '<div class="score-badge '+getScoreClass(score)+'"><div class="score-dot"></div>Concept score: '+score+'/100</div>'
+    : '';
+
+  const proofsHtml = proofs.map((p, idx) => {
+    const col = getProofIconColor(idx);
+    const svg = getProofSVG(p.icon, idx);
+    const rtb = p.rtb_line || '';
+    const ingredientMatch = rtb.match(/^([A-Za-z0-9\s%\+\-]+?)(?:\s+(?:targets|reduces|visibly|controls|repairs|fades|clears|prevents|protects|neutralizes|breaks|enriched|with|and)|,)/i);
+    const ingredient = ingredientMatch ? ingredientMatch[1].trim() : '';
+    const rtbRest = ingredient ? rtb.replace(ingredient,'').replace(/^\s*[,\+\-]\s*/,'').trim() : rtb;
+    return '<div class="fcard-proof">'
+      +'<div class="fcard-proof-icon-wrap" style="border-color:'+col.border+';background:'+col.bg+';color:'+col.stroke+'">'+svg+'</div>'
+      +'<div class="fcard-proof-claim">'+escHtml(p.claim_label||'')+'</div>'
+      +(ingredient ? '<div class="fcard-proof-ingredient">'+escHtml(ingredient)+'</div>' : '')
+      +'<div class="fcard-proof-rtb">'+escHtml(rtbRest||rtb)+'</div>'
+      +'</div>';
+  }).join('');
+
+  const hasPriceBadge = d.price_badge && d.price_badge !== 'null' && d.price_badge !== 'None';
+
+  const tensionText = d.consumer_tension || '';
+  const tensionParts = tensionText.split(/[.?!]\s+/);
+  const tensionStatement = tensionParts[0] ? tensionParts[0].replace(/[?!.]$/,'')+'.' : tensionText;
+  const tensionVoice = tensionParts.slice(1).join(' ');
+
+  const bottomTags = proofs.slice(0,3).map((p, idx) => {
+    const col = getProofIconColor(idx);
+    const svgInner = getProofSVG(p.icon, idx).replace(/<\/?svg[^>]*>/g,'');
+    return '<div class="fcard-bottom-tag">'
+      +'<svg style="width:14px;height:14px;color:'+col.stroke+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+svgInner+'</svg>'
+      +'<div class="fcard-bottom-tag-label">'+escHtml((p.claim_label||'').substring(0,18))+'</div>'
+      +'</div>';
+  }).join('');
+
+  const evalCard = evaluation ? '<div class="eval-card">'
+    +'<div class="eval-title">Concept evaluation breakdown</div>'
+    +'<div class="eval-scores">'
+    +'<div class="eval-score-item"><div class="eval-score-num">'+(evaluation.tension_score||'--')+'<span style="font-size:12px;color:var(--ink3)">/20</span></div><div class="eval-score-label">Tension</div></div>'
+    +'<div class="eval-score-item"><div class="eval-score-num">'+(evaluation.headline_score||'--')+'<span style="font-size:12px;color:var(--ink3)">/20</span></div><div class="eval-score-label">Headline</div></div>'
+    +'<div class="eval-score-item"><div class="eval-score-num">'+(evaluation.rtb_score||'--')+'<span style="font-size:12px;color:var(--ink3)">/30</span></div><div class="eval-score-label">RTB Quality</div></div>'
+    +'<div class="eval-score-item"><div class="eval-score-num">'+(evaluation.copy_score||'--')+'<span style="font-size:12px;color:var(--ink3)">/20</span></div><div class="eval-score-label">Copy</div></div>'
+    +'<div class="eval-score-item"><div class="eval-score-num">'+(evaluation.commercial_score||'--')+'<span style="font-size:12px;color:var(--ink3)">/10</span></div><div class="eval-score-label">Commercial</div></div>'
+    +'<div class="eval-score-item"><div class="eval-score-num" style="color:var(--ink)">'+(score||'--')+'<span style="font-size:12px;color:var(--ink3)">/100</span></div><div class="eval-score-label">Total</div></div>'
+    +'</div>'
+    +'<div class="eval-insights">'
+    +(evaluation.key_strength ? '<div class="eval-insight"><div class="eval-insight-label strength">Strength</div><div class="eval-insight-text">'+escHtml(evaluation.key_strength)+'</div></div>' : '')
+    +(evaluation.key_weakness ? '<div class="eval-insight"><div class="eval-insight-label weakness">To improve</div><div class="eval-insight-text">'+escHtml(evaluation.key_weakness)+'</div></div>' : '')
+    +'</div></div>' : '';
+
+  document.getElementById('formArea').innerHTML =
+    '<div class="concept-wrap">'
+    +cacheBadge
+    +'<div class="score-wrap">'+scoreBadge+'</div>'
+    +'<div class="fmcg-card-outer">'
+    +'<div id="fmcgCard">'
+
+    // LEFT
+    +'<div class="fcard-left">'
+    +'<div class="fcard-img-placeholder">'
+    +'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
+    +'<div class="ph-label">'+escHtml((d.image_prompt||'Hero visual').substring(0,100))+'</div>'
+    +'</div>'
+    +'<div class="fcard-tension-overlay">'
+    +'<div class="fcard-tension-text">'+escHtml(tensionStatement)+(tensionVoice ? '<br><br>'+escHtml(tensionVoice) : '')+'</div>'
+    +'</div>'
+    +'</div>'
+
+    // RIGHT
+    +'<div class="fcard-right">'
+    +'<div class="fcard-top-tension">'
+    +'<span class="fcard-top-tension-statement">'+escHtml(tensionStatement)+'</span>'
+    +(tensionVoice ? '<span class="fcard-top-tension-voice">'+escHtml(tensionVoice)+'</span>' : '')
+    +'</div>'
+    +'<div class="fcard-headline">'+escHtml(d.benefit_headline||'')+'</div>'
+    +'<div class="fcard-brand-row">'
+    +GODREJ_LOGO_SVG
+    +'<div class="fcard-brand-divider"></div>'
+    +'<div class="fcard-brand-name">'+escHtml((d.brand_product_name||'').replace(/^Godrej\s*/i,''))+'</div>'
+    +(d.format_tag ? '<div class="fcard-format-pill">'+escHtml(d.format_tag)+'</div>' : '')
+    +'</div>'
+    +'<div class="fcard-proofs">'+proofsHtml+'</div>'
+    +'<div class="fcard-footer">'
+    +'<div class="fcard-price-block">'
+    +(hasPriceBadge ? '<div class="fcard-price">'+escHtml(d.price_badge)+'</div><div class="fcard-price-sub">Incl. all taxes</div>' : '')
+    +'</div>'
+    +'<div class="fcard-bottom-tags">'+bottomTags+'</div>'
+    +'</div>'
+    +'</div>'  // fcard-right
+    +'</div>'  // fmcgCard
+    +'</div>'  // fmcg-card-outer
+
+    +'<div class="concept-actions">'
+    +'<button class="btn accent-btn" onclick="downloadCard()">Download as PNG</button>'
+    +'<button class="btn primary" onclick="printCard()">Print / PDF</button>'
+    +'<button class="btn" onclick="generate()">Regenerate</button>'
+    +'<button class="btn" onclick="restart()">New brief</button>'
+    +'</div>'
+    +evalCard
+    +'<div class="card" style="margin-bottom:0">'
+    +'<div class="field-eyebrow">Refine Image</div>'
+    +'<div class="field-title" style="font-size:18px;margin-bottom:12px">Edit the image prompt</div>'
+    +'<textarea id="refineInput" style="width:100%;padding:14px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--paper);line-height:1.6;resize:vertical;" rows="4">'+escHtml(d.image_prompt||'')+'</textarea>'
+    +'<button class="btn accent-btn" onclick="refineImage(this)">Generate New Image</button>'
+    +'</div>'
+    +'</div>';
+}
+
+// ── Download as PNG ───────────────────────────
+async function downloadCard() {
+  const card = document.getElementById('fmcgCard');
+  if (!card) return;
+  const btn = event.target;
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+  try {
+    const canvas = await html2canvas(card, {scale: 2, useCORS: true, backgroundColor: '#fff'});
+    const link = document.createElement('a');
+    link.download = 'concept-card.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('Download failed: ' + e.message);
+  }
+  btn.textContent = '⬇ Download as PNG';
+  btn.disabled = false;
+}
+
+// ── Error ─────────────────────────────────────
+function showError(msg) {
+  document.getElementById('formArea').innerHTML =
+    '<div class="error-card"><h3>Something went wrong</h3><p style="margin-bottom:16px">'+escHtml(msg)+'</p><button class="btn primary" onclick="goTo(0)">Go back to brief</button></div>';
+}
+
+function refineImage(btn) {
+  const newPrompt = document.getElementById('refineInput').value;
+  if (!newPrompt) return;
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+  fetchImage(newPrompt).finally(() => {
+    btn.textContent = 'Generate New Image';
+    btn.disabled = false;
+  });
+}
+
+// ── Utilities ─────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function printCard() { window.print(); }
+
+// ── LocalStorage ──────────────────────────────
+// ── Draft lifecycle ───────────────────────────
+// Autosaves the in-progress brief so an accidental refresh keeps your work
+// and your place. The draft is cleared on Home or after a concept is generated.
+function saveStateToStorage() {
+  try {
+    localStorage.setItem('cbb_draft', JSON.stringify({ state: state, step: current }));
+  } catch(e) {}
+}
+function clearDraft() {
+  try { localStorage.removeItem('cbb_draft'); } catch(e) {}
+}
+function loadStateFromStorage() {
+  try {
+    const raw = localStorage.getItem('cbb_draft');
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    if (draft && draft.state) {
+      Object.assign(state, draft.state);
+      // Restore the step, clamped to a valid range
+      const step = parseInt(draft.step);
+      if (!isNaN(step) && step >= 0 && step < FIELDS.length) current = step;
+    }
+  } catch(e) {}
+}
+function saveToHistory() {
+  try {
+    const history = JSON.parse(localStorage.getItem('cbb_history')||'[]');
+    const entry = {id:Date.now(),category:state.categorySelect,market:state.market,tg:state.tg,tension:state.tension,unmet:state.unmet,jtbd:state.jtbd,product:state.product,alternatives:state.alternatives,categoryContext:state.category,savedAt:new Date().toLocaleString()};
+    const existing = history.findIndex(h => h.category===entry.category && h.tension===entry.tension);
+    if (existing > -1) history.splice(existing, 1);
+    history.unshift(entry);
+    localStorage.setItem('cbb_history', JSON.stringify(history.slice(0,5)));
+  } catch(e) {}
+}
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem('cbb_history')||'[]'); } catch(e) { return []; }
+}
+function setHistory(arr) {
+  try { localStorage.setItem('cbb_history', JSON.stringify(arr)); } catch(e) {}
+}
+function getTrash() {
+  try { return JSON.parse(localStorage.getItem('cbb_trash')||'[]'); } catch(e) { return []; }
+}
+function setTrash(arr) {
+  try { localStorage.setItem('cbb_trash', JSON.stringify(arr)); } catch(e) {}
+}
+
+// Move a recent brief to trash. Also removes it from the server gold standards
+// so it no longer affects similarity matching / gold standard reuse.
+async function trashBrief(idx) {
+  const history = getHistory();
+  if (!history[idx]) return;
+  const brief = history[idx];
+
+  // Remove from recent list, add to trash
+  history.splice(idx, 1);
+  setHistory(history);
+  const trash = getTrash();
+  trash.unshift(brief);
+  setTrash(trash.slice(0, 20));
+
+  // Tell the server to drop the matching gold standard (best effort)
+  try {
+    await fetch('/api/gold-standards/delete-by-content', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ category: brief.category||'', tension: brief.tension||'' })
+    });
+  } catch(e) {}
+
+  openRecentModal();
+}
+
+// Restore a brief from trash back to recent briefs
+function restoreBrief(idx) {
+  const trash = getTrash();
+  if (!trash[idx]) return;
+  const brief = trash[idx];
+  trash.splice(idx, 1);
+  setTrash(trash);
+  const history = getHistory();
+  history.unshift(brief);
+  setHistory(history.slice(0, 5));
+  openTrashModal();
+}
+
+// Permanently delete a brief from trash
+function deleteForever(idx) {
+  const trash = getTrash();
+  if (!trash[idx]) return;
+  trash.splice(idx, 1);
+  setTrash(trash);
+  openTrashModal();
+}
+function loadBriefByIndex(idx) {
+  const history = getHistory();
+  if (!history[idx]) return;
+  const h = history[idx];
+  state.categorySelect = h.category||'';
+  state.category = h.categoryContext||'';
+  state.market = h.market||'';
+  state.tg = h.tg||'';
+  state.tension = h.tension||'';
+  state.unmet = h.unmet||'';
+  state.jtbd = h.jtbd||'';
+  state.product = h.product||'';
+  state.alternatives = h.alternatives||'';
+  current = 0;
+  saveStateToStorage();
+  renderProgress();
+  renderField();
+  scrollTop();
+}
+function restart() {
+  Object.assign(state,{category:'',categorySelect:'',market:'',tg:'',tension:'',unmet:'',jtbd:'',product:'',alternatives:''});
+  current = 0;
+  clearDraft();
+  renderProgress();
+  renderField();
+  scrollTop();
+}
+
+
+// ── Home button ───────────────────────────────
+function goHome() {
+  Object.assign(state,{category:'',categorySelect:'',market:'',tg:'',tension:'',unmet:'',jtbd:'',product:'',alternatives:''});
+  current = 0;
+  clearDraft();
+  renderProgress();
+  renderField();
+  scrollTop();
+}
+
+// ── Recent briefs modal ───────────────────────
+function openRecentModal() {
+  const history = getHistory();
+  const trashCount = getTrash().length;
+  const modal = document.getElementById('recentModal');
+  const content = document.getElementById('recentModalContent');
+  document.getElementById('modalTitleText').textContent = 'Recent Briefs';
+
+  let html = '';
+  if (history.length === 0) {
+    html = '<div class="modal-empty">No recent briefs saved yet.</div>';
+  } else {
+    html = history.map((h, idx) =>
+      '<div class="modal-brief-item">'
+      +'<div class="modal-brief-clickable" onclick="loadBriefByIndex('+idx+');closeRecentModalDirect()">'
+      +'<div class="modal-brief-cat">'+escHtml(h.category||'Unknown category')+'</div>'
+      +'<div class="modal-brief-tension">'+escHtml((h.tension||'').substring(0,90))+((h.tension||'').length>90?'…':'')+'</div>'
+      +'<div class="modal-brief-date">'+h.savedAt+'</div>'
+      +'</div>'
+      +'<button class="brief-trash-btn" title="Move to trash" onclick="event.stopPropagation();trashBrief('+idx+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>'
+      +'</div>'
+    ).join('');
+  }
+
+  // Trash link at bottom
+  html += '<div class="modal-footer-link"><span onclick="openTrashModal()">View Trash'+(trashCount>0?' ('+trashCount+')':'')+' →</span></div>';
+
+  content.innerHTML = html;
+  modal.classList.add('open');
+}
+
+function openTrashModal() {
+  const trash = getTrash();
+  const content = document.getElementById('recentModalContent');
+  document.getElementById('modalTitleText').textContent = 'Trash';
+
+  let html = '';
+  if (trash.length === 0) {
+    html = '<div class="modal-empty">Trash is empty.</div>';
+  } else {
+    html = trash.map((h, idx) =>
+      '<div class="modal-brief-item">'
+      +'<div style="flex:1">'
+      +'<div class="modal-brief-cat">'+escHtml(h.category||'Unknown category')+'</div>'
+      +'<div class="modal-brief-tension">'+escHtml((h.tension||'').substring(0,90))+((h.tension||'').length>90?'…':'')+'</div>'
+      +'<div class="modal-brief-date">'+h.savedAt+'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px">'
+      +'<button class="brief-restore-btn" title="Restore" onclick="restoreBrief('+idx+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 103-7.7L3 7"/></svg></button>'
+      +'<button class="brief-trash-btn" title="Delete forever" onclick="deleteForever('+idx+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>'
+      +'</div>'
+      +'</div>'
+    ).join('');
+  }
+
+  html += '<div class="modal-footer-link"><span onclick="openRecentModal()">← Back to Recent Briefs</span></div>';
+  content.innerHTML = html;
+  document.getElementById('recentModal').classList.add('open');
+}
+
+function closeRecentModal(e) {
+  if (e.target === document.getElementById('recentModal')) {
+    document.getElementById('recentModal').classList.remove('open');
+  }
+}
+
+function closeRecentModalDirect() {
+  document.getElementById('recentModal').classList.remove('open');
+}
+
+// Init — clean up any legacy keys from older versions, then restore the active draft
+localStorage.removeItem('cbb_state');
+localStorage.removeItem('cbb_step');
+loadStateFromStorage();
+renderProgress();
+renderField();
+</script>
+</body>
+</html>

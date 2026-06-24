@@ -1,0 +1,116 @@
+{
+  "brief_1782093259329": {
+    "originalPrompt": "Category: Men's Grooming — Men's face wash market growing fast in India. Garnier Men and Nivea Men dominate. Oil control and anti-acne are crowded. Post-gym/post-sweat skincare is an untapped positioning.\nMarket: India, Tier 1 cities. Young working men, gym-goers, sports enthusiasts. Fitness culture booming post-Covid. Men now spending on personal care but want products made specifically for active lifestyles.\nTarget Group: Men aged 20-32. Hits the gym 4-5 times a week. Sweats heavily. Skin feels dirty, clogged, and tight after workouts. Uses whatever face wash is in the bathroom, not something made for him.\nConsumer Tension: I work hard at the gym but my skin looks worse than ever. Sweat, dirt and oil clog my pores and no face wash actually clears it properly after a workout.\nUnmet Need: No face wash in the Indian mass market is specifically positioned for post-workout skin. Nobody owns the gym-to-shower moment for men.\nJob To Be Done: Help me feel as clean and fresh after a workout as I feel strong and accomplished from it.\nProduct Details: Working name: Godrej ActiveFlush Face Wash. 100ml tube at Rs 149. Contains Activated Charcoal + Salicylic Acid + Menthol Complex. Deep pore flush formula.\nCurrent Alternatives: Garnier Men Power White (brightening, not pore cleaning), Nivea Men (generic, no workout positioning), Himalaya Men (herbal, no active ingredient credibility), Bombay Shaving Company (premium D2C, not mass).",
+    "concept": {
+      "consumer_tension": "Why does my skin feel so dirty and clogged after a workout?",
+      "brand_product_name": "Godrej ActiveFlush Face Wash",
+      "format_tag": "Deep Pore Flush Formula",
+      "benefit_headline": "Flush Away Post-Workout Sweat & Grime",
+      "proof_block_1": {
+        "claim_label": "Deep Pore Cleanse",
+        "rtb_line": "Activated Charcoal draws out impurities from clogged pores.",
+        "icon": "magnifying glass over pore"
+      },
+      "proof_block_2": {
+        "claim_label": "Fights Breakouts",
+        "rtb_line": "Salicylic Acid targets sweat-induced acne and oil buildup.",
+        "icon": "shield"
+      },
+      "proof_block_3": {
+        "claim_label": "Instant Freshness",
+        "rtb_line": "Menthol Complex delivers an invigorating, cooling sensation.",
+        "icon": "ice cube"
+      },
+      "price_badge": "Rs 149",
+      "image_prompt": "Detailed prompt for a 16:9 premium FMCG advertisement. LEFT PANEL (50%): Emotional lifestyle photo of consumer experiencing 'consumer_tension'. RIGHT PANEL (50%): Extremely dense, polished FMCG retail layout. Top: Overarching promise (max 2 lines), thin divider, 'benefit_headline' (largest bold uppercase). Brand Lockup: 'Godrej Logo Godrej ActiveFlush Face Wash | Post-Workout Skincare', followed by a capsule-shaped product system strip. Middle 2x2 grid (no borders, tight spacing): Top-Left: Proof block 1 (premium circular icon, headline, short proof). Top-Right: Proof block 2 (icon, headline, short proof). Bottom-Left: Proof block 3 (icon, headline, short proof). Bottom-Right: Massive hero photorealistic packshot (dominates quadrant, studio lighting, water droplets, highly readable) with 'Rs 149' beside it. Bottom: Full-width dark footer bar with 3 meaningful benefit icons. Do NOT use placeholder section labels. Zero empty whitespace."
+    },
+    "score": 78,
+    "evaluation": {
+      "total_score": 78,
+      "tension_score": 15,
+      "headline_score": 16,
+      "rtb_score": 20,
+      "copy_score": 15,
+      "commercial_score": 12,
+      "key_strength": "The concept effectively addresses a specific post-workout skincare need with clear benefits and relevant ingredients.",
+      "key_weakness": "The brand name 'ActiveFlush' might sound a bit harsh or clinical, and the overall concept could benefit from a stronger emotional connection beyond just 'flushing away grime'."
+    },
+    "createdAt": "2026-06-22T01:54:19.329Z"
+  },
+  "brief_1782093745545": {
+    "originalPrompt": "Category: Cooking Oils — Refined oil market dominated by Fortune and Saffola. Heart health positioning is overcrowded. Immunity and gut health is the emerging white space.\nMarket: India, Tier 1 and Tier 2 cities. Health-conscious households. Post-Covid awareness around immunity is high. Family decision makers willing to pay 20-30% premium for a functional benefit they can explain.\nTarget Group: Women aged 28-45, married, managing family health. Cooks 2 meals a day. Reads labels. Worried about cholesterol and diabetes in the family. Wants to feel like she is making the right choice for her family every day.\nConsumer Tension: I switched to a healthy oil but my family still got sick. I don't know if my cooking oil is actually doing anything or if it is just marketing.\nUnmet Need: No cooking oil in the mass market credibly delivers immunity or gut health benefit with a visible, daily mechanism. They all say healthy but none explain how.\nJob To Be Done: Help me feel confident that every meal I cook is actively protecting my family's health, not just tasting good.\nProduct Details: Working name: Godrej NutriShield Cooking Oil. 1 litre bottle at Rs 189. Contains Omega-3 + Curcumin + Vitamin D3 complex. Blended oil format.\nCurrent Alternatives: Saffola (trusted but old, heart-only positioning), Fortune (mass, no health credibility), Figaro Olive Oil (premium, not Indian cooking friendly), cold-pressed startups (too niche, no trust).",
+    "concept": {
+      "consumer_tension": "My healthy oil is not protecting my family. Is it just marketing?",
+      "brand_product_name": "Godrej NutriShield Cooking Oil",
+      "format_tag": "Advanced Blended Oil",
+      "benefit_headline": "Shield Your Family's Immunity Daily.",
+      "proof_block_1": {
+        "claim_label": "Boosts Immunity",
+        "rtb_line": "Fortified with Vitamin D3, known for immune support.",
+        "icon": "shield icon"
+      },
+      "proof_block_2": {
+        "claim_label": "Fights Inflammation",
+        "rtb_line": "Contains Curcumin extract, a powerful anti-inflammatory.",
+        "icon": "leaf icon"
+      },
+      "proof_block_3": {
+        "claim_label": "Supports Gut Health",
+        "rtb_line": "Enriched with Omega-3 fatty acids for digestive balance.",
+        "icon": "gut icon"
+      },
+      "price_badge": "Rs 189",
+      "image_prompt": "Detailed prompt for a 16:9 premium FMCG advertisement. LEFT PANEL (50%): Emotional lifestyle photo of consumer experiencing 'consumer_tension'. RIGHT PANEL (50%): Extremely dense, polished FMCG retail layout. Top: Overarching promise (max 2 lines), thin divider, 'Shield Your Family's Immunity Daily.' (largest bold uppercase). Brand Lockup: 'Godrej NutriShield Cooking Oil | Advanced Blended Oil', followed by a capsule-shaped product system strip. Middle 2x2 grid (no borders, tight spacing): Top-Left: Proof block 1 (premium circular icon, headline, short proof). Top-Right: Proof block 2 (icon, headline, short proof). Bottom-Left: Proof block 3 (icon, headline, short proof). Bottom-Right: Massive hero photorealistic packshot (dominates quadrant, studio lighting, water droplets, highly readable) with 'Rs 189' beside it. Bottom: Full-width dark footer bar with 3 meaningful benefit icons. Do NOT use placeholder section labels. Zero empty whitespace."
+    },
+    "score": 78,
+    "evaluation": {
+      "total_score": 78,
+      "tension_score": 15,
+      "headline_score": 15,
+      "rtb_score": 20,
+      "copy_score": 15,
+      "commercial_score": 13,
+      "key_strength": "The concept effectively addresses a relevant consumer tension regarding the efficacy of healthy oils and offers a multi-faceted solution with clear, distinct benefits.",
+      "key_weakness": "The brand and product name are somewhat generic, and the price point, while provided, lacks context for competitive comparison, potentially impacting commercial appeal."
+    },
+    "createdAt": "2026-06-22T02:02:25.545Z"
+  },
+  "brief_1782294744432": {
+    "originalPrompt": "Category: Functional Drinks — Health drinks market in India growing fast post-Covid. Horlicks and Complan own the kids nutrition space. Adult functional drinks is wide open, especially for stress and sleep.\nMarket: India, Tier 1 cities. Urban working professionals. High stress, poor sleep, long screen hours. Willing to pay Rs 30-50 per serving for something that actually works.\nTarget Group: Men and women aged 25-40. Working professionals. Sleep 5-6 hours a night. Wake up tired. Rely on 3-4 cups of coffee to get through the day. Know they need to fix their sleep but don't know how.\nConsumer Tension: I  am exhausted all day but then I can't sleep at night. Coffee keeps me going but makes it worse. I feel like I am running on empty and there is no way out.\nUnmet Need: No drink in the Indian mass market credibly helps adults wind down and sleep better without melatonin pills or herbal kadha that tastes terrible.\nJob To Be Done: Help me switch off at the end of the day so I can sleep properly and wake up actually feeling rested.\nProduct Details: Working name: Godrej SleepWell Drink. 200ml sachet at Rs 45. Contains Ashwagandha KSM-66 + L-Theanine + Magnesium Glycinate. Warm milk-based drink, vanilla flavour.\nCurrent Alternatives: Horlicks (kids, not for adults), Bournvita (energy not sleep), melatonin gummies (medical, not mainstream), herbal teas (weak claim, bad taste), no credible Indian brand owns adult sleep.",
+    "concept": {
+      "consumer_tension": "Why am I exhausted all day but can't sleep at night?",
+      "brand_product_name": "Godrej SleepWell Drink",
+      "format_tag": "Warm Milk-Based Sachet Drink",
+      "benefit_headline": "Finally, Deep Restful Sleep, Naturally.",
+      "proof_block_1": {
+        "claim_label": "Calms Mind",
+        "rtb_line": "Ashwagandha KSM-66 reduces stress hormone levels.",
+        "icon": "leaf icon"
+      },
+      "proof_block_2": {
+        "claim_label": "Eases Tension",
+        "rtb_line": "L-Theanine promotes alpha brain waves for relaxation.",
+        "icon": "wave icon"
+      },
+      "proof_block_3": {
+        "claim_label": "Supports Sleep",
+        "rtb_line": "Magnesium Glycinate aids muscle relaxation and sleep.",
+        "icon": "moon icon"
+      },
+      "price_badge": "₹45/sachet",
+      "image_prompt": "Detailed prompt for a 16:9 premium FMCG advertisement. LEFT PANEL (50%): Emotional lifestyle photo of consumer experiencing 'consumer_tension'. RIGHT PANEL (50%): Extremely dense, polished FMCG retail layout. Top: Overarching promise (max 2 lines), thin divider, 'Finally, Deep Restful Sleep, Naturally.' (largest bold uppercase). Brand Lockup: 'Godrej SleepWell Drink | Vanilla Flavored Relaxation Drink', followed by a capsule-shaped product system strip. Middle 2x2 grid (no borders, tight spacing): Top-Left: Proof block 1 (premium circular icon, headline, short proof). Top-Right: Proof block 2 (icon, headline, short proof). Bottom-Left: Proof block 3 (icon, headline, short proof). Bottom-Right: Massive hero photorealistic packshot (dominates quadrant, studio lighting, water droplets, highly readable) with '₹45/sachet' beside it. Bottom: Full-width dark footer bar with 3 meaningful benefit icons. Do NOT use placeholder section labels. Zero empty whitespace."
+    },
+    "score": 85,
+    "evaluation": {
+      "total_score": 85,
+      "tension_score": 18,
+      "headline_score": 17,
+      "rtb_score": 25,
+      "copy_score": 16,
+      "commercial_score": 9,
+      "key_strength": "The concept effectively addresses a common consumer tension with a clear, natural solution and strong scientific backing for its ingredients.",
+      "key_weakness": "The commercial viability might be challenged by the relatively high price point for a single-serve sachet in the Indian market, potentially limiting broad appeal."
+    },
+    "createdAt": "2026-06-24T09:52:24.432Z"
+  }
+}
